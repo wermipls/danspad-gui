@@ -32,3 +32,7 @@ Fixed command line arguments are used for configuration.
 Profile argument can be omitted, thresholds stored on the pad will be used. Serial port argument can be omitted as well, application will attempt connecting to the first USB serial device instead.
 
 Profile files are currently in binary format, for simplicity (but lack of portability across architectures).
+
+## License
+
+[0BSD](LICENSE).
