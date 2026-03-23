@@ -308,7 +308,9 @@ port_open:
     sp_set_bits(port, 8);
     sp_set_parity(port, SP_PARITY_NONE);
     sp_set_stopbits(port, 1);
-    sp_set_flowcontrol(port, SP_FLOWCONTROL_XONXOFF); // usb stack dependent; my rp2040 needed this.
+    // usb stack dependent; my rp2040 needed this.
+    sp_set_dtr(port, SP_DTR_ON);
+    sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
 
     ctx->port = port;
     return 0;
