@@ -301,6 +301,14 @@ port_open:
         return 2;
     }
 
+    // per libserialport documentation, there is no "default" configuration,
+    // and it should always by set by the program.
+    sp_set_baudrate(port, 500000); // arbitrary
+    sp_set_bits(port, 8);
+    sp_set_parity(port, SP_PARITY_NONE);
+    sp_set_stopbits(port, 1);
+    sp_set_flowcontrol(port, SP_FLOWCONTROL_XONXOFF); // usb stack dependent; my rp2040 needed this.
+
     ctx->port = port;
     return 0;
 }
