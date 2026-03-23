@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <libserialport.h>
 #include <SDL2/SDL.h>
+#include <errno.h>
 
 #define SENSORS_MAX 64
 #define SENSOR_MAX_VALUE 1023
@@ -344,7 +345,7 @@ int profile_load(context_t *ctx, const char *profile)
     }
 
     if (sensor_count != ctx->sensors) {
-        printf("Profile has %d thresholds, connected pad has %lld\n",
+        printf("Profile has %d thresholds, connected pad has %zu\n",
                sensor_count, ctx->sensors);
         fclose(f);
         return 5;
@@ -421,7 +422,7 @@ int main(int argc, char *argv[])
 
     ctx.sensors = pad_get_values(&ctx, 0);
     if (ctx.sensors) {
-        printf("Sensor count: %lld\n", ctx.sensors);
+        printf("Sensor count: %zu\n", ctx.sensors);
     } else {
         printf("Failed to get response from pad, exiting...\n");
         return 3;
