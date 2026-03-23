@@ -250,6 +250,19 @@ void ui_redraw(context_t *ctx)
     SDL_RenderPresent(ctx->renderer);
 }
 
+void serial_port_configure(context_t *ctx)
+{
+    // per libserialport documentation, there is no "default" configuration,
+    // and it should always by set by the program.
+    sp_set_baudrate(ctx->port, 500000); // arbitrary
+    sp_set_bits(ctx->port, 8);
+    sp_set_parity(ctx->port, SP_PARITY_NONE);
+    sp_set_stopbits(ctx->port, 1);
+    // usb stack dependent; my rp2040 needed this.
+    sp_set_dtr(ctx->port, SP_DTR_ON);
+    sp_set_flowcontrol(ctx->port, SP_FLOWCONTROL_NONE);
+}
+
 /* opens port of specified name, otherwise opens the first USB port
  * returns 0 on success, error code otherwise */
 int serial_open_port(context_t *ctx, const char *port_name)
@@ -302,17 +315,9 @@ port_open:
         return 2;
     }
 
-    // per libserialport documentation, there is no "default" configuration,
-    // and it should always by set by the program.
-    sp_set_baudrate(port, 500000); // arbitrary
-    sp_set_bits(port, 8);
-    sp_set_parity(port, SP_PARITY_NONE);
-    sp_set_stopbits(port, 1);
-    // usb stack dependent; my rp2040 needed this.
-    sp_set_dtr(port, SP_DTR_ON);
-    sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
-
     ctx->port = port;
+    serial_port_configure(ctx);
+
     return 0;
 }
 
@@ -474,6 +479,7 @@ reconnect:
         int count = pad_get_values(&ctx, 0);
         if (!count) {
             if (SP_OK == sp_open(ctx.port, SP_MODE_READ_WRITE)) {
+                serial_port_configure(&ctx);
                 goto reconnect;
             }
         }
